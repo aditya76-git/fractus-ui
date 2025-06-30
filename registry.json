@@ -1,0 +1,81 @@
+{
+    "$schema": "https://ui.shadcn.com/schema/registry.json",
+    "name": "fractus-ui",
+    "homepage": "https://fractus-ui.pages.dev",
+    "author": "aditya76-git",
+    "items": [
+        {
+            "name": "explorer",
+            "type": "registry:component",
+            "title": "Explorer",
+            "description": "A sidebar-like interface to easily browse and preview UI components and layouts with smooth navigation",
+            "files": [
+                {
+                    "path": "src/components/explorer/index.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/viewer/content.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/viewer/header.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/viewer/index.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/viewer/viewer.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/utils/responsive.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/navigator/body.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/navigator/footer.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/navigator/header.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/navigator/index.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/navigator/navigator.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/context/explorer-context.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/components/explorer/components/toggle-fullscreen.jsx",
+                    "type": "registry:component"
+                },
+                {
+                    "path": "src/hooks/use-window-size.jsx",
+                    "type": "registry:hook"
+                }
+            ],
+            "registryDependencies": [
+                "toggle",
+                "scroll-area",
+                "button"
+            ],
+            "dependencies": [
+                "clsx",
+                "lucide-react"
+            ]
+        }
+    ]
+}

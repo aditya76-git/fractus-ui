@@ -1,0 +1,1 @@
+export const NavigatorFooter = ({ children }) => children;
