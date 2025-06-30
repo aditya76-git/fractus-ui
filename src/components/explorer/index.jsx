@@ -57,7 +57,6 @@ const Explorer = ({ master, children, config }) => {
     }
   });
 
-  // Get the navigator width for fixed positioning
   const navigatorWidthClass = isMobileView ? "w-full" : getResponsiveWidthClass(width);
 
   return (
@@ -71,7 +70,7 @@ const Explorer = ({ master, children, config }) => {
         setFullScreen
       }}>
       <div className="relative h-screen w-full bg-background overflow-hidden">
-        {/* Navigator with fixed positioning */}
+     
         {!fullScreen && showNavigator && (
           <div
             className={clsx(
@@ -82,13 +81,12 @@ const Explorer = ({ master, children, config }) => {
           </div>
         )}
 
-        {/* Viewer with proper margin to account for navigator */}
         {showViewer && (
           <div
             className={clsx(
               "absolute top-0 right-0 h-full flex flex-col overflow-hidden",
               !fullScreen && showNavigator && !isMobileView 
-                ? `calc(100% - ${getNavigatorWidth(width)})` // Use calc for precise width
+                ? `calc(100% - ${getNavigatorWidth(width)})`
                 : "w-full"
             )}
             style={{
@@ -110,7 +108,6 @@ const Explorer = ({ master, children, config }) => {
   );
 };
 
-// Helper function to get exact navigator width
 const getNavigatorWidth = (width) => {
   if (width >= 2296) return "25%";
   if (width >= 1706) return "30%";
