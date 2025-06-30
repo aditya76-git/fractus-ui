@@ -24,7 +24,7 @@ export const NavigatorBody = ({ children }) => {
 };
 
 const NavigatorSection = ({ data, mobileOnly }) => {
-  const { isMobileView } = useExplorer();
+  const { isMobileView, fullScreen, setFullScreen } = useExplorer();
 
   if (!data?.title && !data?.element) return null;
   if (mobileOnly && !isMobileView) return null;
@@ -32,7 +32,7 @@ const NavigatorSection = ({ data, mobileOnly }) => {
   return (
     <div className="space-y-2">
       {data.title && <h2 className="text-sm font-medium">{data.title}</h2>}
-      {data.element && React.cloneElement(data.element, { meta: data })}
+      {data.element && React.cloneElement(data.element, { meta: data, isMobileView, fullScreen, setFullScreen })}
     </div>
   );
 };

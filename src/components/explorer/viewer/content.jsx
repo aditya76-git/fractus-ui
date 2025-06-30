@@ -3,7 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useExplorer } from "../context/explorer-context";
 
 export const ViewerContent = ({ children }) => {
-  const { master, config, fullScreen, setFullScreen } = useExplorer();
+  const { master, config, isMobileView, fullScreen, setFullScreen } = useExplorer();
   const pathname = config?.getPathname();
 
   const selectedBlock = React.useMemo(() => {
@@ -24,7 +24,7 @@ export const ViewerContent = ({ children }) => {
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
           ? React.cloneElement(child, {
-            meta: selectedBlock,
+            meta: selectedBlock, isMobileView, fullScreen, setFullScreen
           })
           : child)}
     </ScrollArea>

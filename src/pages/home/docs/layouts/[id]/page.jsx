@@ -37,13 +37,13 @@ const CodeSnippet = ({ code, copyButtonDisabled = false }) => {
     );
 };
 
-const Layouts = ({ meta }) => {
+const Layouts = ({ meta, isMobileView, fullScreen, setFullScreen }) => {
 
     const [activeTab, setActiveTab] = useState("manual")
 
 
     return (
-        <div className="px-6 py-4">
+        <div className={clsx("py-4", fullScreen ? "px-40" : "px-6")}>
 
             {meta?.docs?.info && <div className="mt-2 mb-4">
                 <CodeSnippet code={meta?.docs?.info} copyButtonDisabled={true} />
