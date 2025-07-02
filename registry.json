@@ -12,59 +12,73 @@
             "files": [
                 {
                     "path": "src/components/explorer/index.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/index.jsx"
                 },
                 {
                     "path": "src/components/explorer/viewer/content.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/viewer/content.jsx"
                 },
                 {
                     "path": "src/components/explorer/viewer/header.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/viewer/header.jsx"
                 },
                 {
                     "path": "src/components/explorer/viewer/index.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/viewer/index.jsx"
                 },
                 {
                     "path": "src/components/explorer/viewer/viewer.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/viewer/viewer.jsx"
                 },
                 {
                     "path": "src/components/explorer/utils/responsive.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/utils/responsive.jsx"
                 },
                 {
                     "path": "src/components/explorer/navigator/body.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/navigator/body.jsx"
                 },
                 {
                     "path": "src/components/explorer/navigator/footer.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/navigator/footer.jsx"
                 },
                 {
                     "path": "src/components/explorer/navigator/header.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/navigator/header.jsx"
                 },
                 {
                     "path": "src/components/explorer/navigator/index.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/navigator/index.jsx"
                 },
                 {
                     "path": "src/components/explorer/navigator/navigator.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/navigator/navigator.jsx"
                 },
                 {
                     "path": "src/components/explorer/context/explorer-context.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/context/explorer-context.jsx"
                 },
                 {
                     "path": "src/components/explorer/components/toggle-fullscreen.jsx",
-                    "type": "registry:component"
+                    "type": "registry:component",
+                    "target": "src/components/explorer/components/toggle-fullscreen.jsx"
                 },
                 {
                     "path": "src/hooks/use-window-size.jsx",
-                    "type": "registry:hook"
+                    "type": "registry:hook",
+                    "target": "src/hooks/use-window-size.jsx"
                 }
             ],
             "registryDependencies": [

@@ -17,72 +17,86 @@
     {
       "path": "src/components/explorer/index.jsx",
       "content": "// Main Explorer component with fixed layout\nimport clsx from \"clsx\";\nimport React, { useState } from \"react\";\nimport { ExplorerContext } from \"./context/explorer-context\";\nimport { getResponsiveWidthClass } from \"./utils/responsive\";\nimport { useWindowSize } from \"@/hooks/use-window-size\"\n\nimport {\n  Navigator,\n  NavigatorHeader,\n  NavigatorLeft,\n  NavigatorRight,\n  NavigatorBody,\n  NavigatorMobileOnly,\n  NavigatorDesktopOnly,\n  NavigatorFooter\n} from \"./navigator\";\n\nimport {\n  Viewer,\n  ViewerLeft,\n  ViewerRight,\n  ViewerLeftNav,\n  ViewerRightMobileOnly,\n  ViewerRightDesktopOnly,\n  ViewerHeader,\n  ViewerContent\n} from \"./viewer\";\n\nimport { ToggleFullScreen } from \"./components/toggle-fullscreen\";\n\nconst Explorer = ({ master, children, config }) => {\n  const { width } = useWindowSize();\n  const isMobileView = width < 768;\n  const [fullScreen, setFullScreen] = useState(false);\n\n  const pathname = config?.getPathname();\n  const selectedBlock = React.useMemo(() => {\n    const allBlocks = master.flatMap((section) =>\n      section.type === \"block\" ? section.blocks : []);\n    return allBlocks.find((b) => b.slug === pathname);\n  }, [pathname, master]);\n\n  const showNavigator = !selectedBlock || !isMobileView;\n  const showViewer = selectedBlock !== null && !(isMobileView && config?.baseSlug === pathname);\n\n  const childArray = React.Children.toArray(children);\n\n  let navigator = null;\n  let viewer = null;\n\n  childArray.forEach(child => {\n    if (child.type === Navigator) {\n      navigator = child;\n    } else if (child.type === Viewer) {\n      viewer = child;\n    }\n  });\n\n  const navigatorWidthClass = isMobileView ? \"w-full\" : getResponsiveWidthClass(width);\n\n  return (\n    <ExplorerContext.Provider\n      value={{\n        master,\n        config,\n        selectedBlock,\n        isMobileView,\n        fullScreen,\n        setFullScreen\n      }}>\n      <div className=\"relative h-screen w-full bg-background overflow-hidden\">\n     \n        {!fullScreen && showNavigator && (\n          <div\n            className={clsx(\n              navigatorWidthClass,\n              \"absolute top-0 left-0 h-full border-r flex flex-col z-10 bg-background\"\n            )}>\n            {navigator}\n          </div>\n        )}\n\n        {showViewer && (\n          <div\n            className={clsx(\n              \"absolute top-0 right-0 h-full flex flex-col overflow-hidden\",\n              !fullScreen && showNavigator && !isMobileView \n                ? `calc(100% - ${getNavigatorWidth(width)})`\n                : \"w-full\"\n            )}\n            style={{\n              width: !fullScreen && showNavigator && !isMobileView \n                ? `calc(100% - ${getNavigatorWidth(width)})` \n                : '100%'\n            }}>\n            {viewer}\n          </div>\n        )}\n\n        {!showViewer && !isMobileView && (\n          <div className=\"flex items-center justify-center h-full text-muted-foreground\">\n            Select a component to view\n          </div>\n        )}\n      </div>\n    </ExplorerContext.Provider>\n  );\n};\n\nconst getNavigatorWidth = (width) => {\n  if (width >= 2296) return \"25%\";\n  if (width >= 1706) return \"30%\";\n  if (width >= 1133) return \"33%\";\n  if (width >= 950) return \"50%\";\n  if (width >= 800) return \"38%\";\n  return \"100%\";\n};\n\nExplorer.Navigator = Navigator;\nExplorer.NavigatorHeader = NavigatorHeader;\nExplorer.NavigatorLeft = NavigatorLeft;\nExplorer.NavigatorRight = NavigatorRight;\nExplorer.NavigatorBody = NavigatorBody;\nExplorer.NavigatorMobileOnly = NavigatorMobileOnly;\nExplorer.NavigatorDesktopOnly = NavigatorDesktopOnly;\nExplorer.NavigatorFooter = NavigatorFooter;\n\nExplorer.Viewer = Viewer;\nExplorer.ViewerLeft = ViewerLeft;\nExplorer.ViewerRight = ViewerRight;\nExplorer.ViewerLeftNav = ViewerLeftNav;\nExplorer.ViewerRightMobileOnly = ViewerRightMobileOnly;\nExplorer.ViewerRightDesktopOnly = ViewerRightDesktopOnly;\nExplorer.ViewerHeader = ViewerHeader;\nExplorer.ViewerContent = ViewerContent;\n\nExplorer.ToggleFullScreen = ToggleFullScreen;\n\nexport default Explorer;",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/index.jsx"
     },
     {
       "path": "src/components/explorer/viewer/content.jsx",
       "content": "import React from \"react\";\nimport { ScrollArea } from \"@/components/ui/scroll-area\";\nimport { useExplorer } from \"../context/explorer-context\";\n\nexport const ViewerContent = ({ children }) => {\n  const { master, config, isMobileView, fullScreen, setFullScreen } = useExplorer();\n  const pathname = config?.getPathname();\n\n  const selectedBlock = React.useMemo(() => {\n    const allBlocks = master.flatMap((section) =>\n      section.type === \"block\" ? section.blocks : []);\n    return allBlocks.find((b) => b.slug === pathname);\n  }, [pathname, master]);\n\n  if (!selectedBlock && pathname !== config?.baseSlug) {\n    return (\n      <div className=\"flex-1 flex items-center justify-center text-muted-foreground\">No block found for this route.\n                      </div>\n    );\n  }\n\n  return (\n    <ScrollArea type=\"always\" className=\"h-[91vh]\">\n      {React.Children.map(children, (child) =>\n        React.isValidElement(child)\n          ? React.cloneElement(child, {\n            meta: selectedBlock, isMobileView, fullScreen, setFullScreen\n          })\n          : child)}\n    </ScrollArea>\n  );\n};",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/viewer/content.jsx"
     },
     {
       "path": "src/components/explorer/viewer/header.jsx",
       "content": "import { Button } from \"@/components/ui/button\";\nimport { ArrowLeft, ArrowRight, X } from \"lucide-react\";\nimport clsx from \"clsx\";\nimport { useExplorer } from \"../context/explorer-context\";\n\nexport const ViewerLeft = ({ children }) => children;\n\nexport const ViewerLeftNav = () => {\n  const { master, config } = useExplorer();\n\n  const allBlocks = master\n    .filter((item) => item.type === \"block\")\n    .flatMap((item) => item.blocks ?? []);\n\n  const currentIndex = allBlocks.findIndex((b) => b.slug === config?.getPathname());\n\n  const isPrevDisabled = currentIndex <= 0;\n  const isNextDisabled = currentIndex >= allBlocks.length - 1;\n\n  return (\n    <>\n      <Button\n        variant=\"ghost\"\n        size=\"icon\"\n        onClick={() => config?.navigate(config?.baseSlug)}>\n        <X className=\"h-4 w-4\" />\n      </Button>\n      <Button\n        variant=\"ghost\"\n        size=\"icon\"\n        disabled={isPrevDisabled}\n        onClick={() => !isPrevDisabled && config?.navigate(allBlocks[currentIndex - 1].slug)}>\n        <ArrowLeft className=\"h-4 w-4\" />\n      </Button>\n      <Button\n        variant=\"ghost\"\n        size=\"icon\"\n        disabled={isNextDisabled}\n        onClick={() => !isNextDisabled && config?.navigate(allBlocks[currentIndex + 1].slug)}>\n        <ArrowRight className=\"h-4 w-4\" />\n      </Button>\n    </>\n  );\n};\n\nexport const ViewerRight = ({ children }) => (\n  <div className=\"ml-auto\">{children}</div>\n);\n\nexport const ViewerRightMobileOnly = ({ children }) => {\n  const { isMobileView } = useExplorer();\n  return isMobileView ? <div className=\"ml-auto\">{children}</div> : null;\n};\n\nexport const ViewerRightDesktopOnly = ({ children }) => {\n  const { isMobileView } = useExplorer();\n  return !isMobileView ? <div className=\"ml-auto\">{children}</div> : null;\n};\n\nexport const ViewerHeader = ({ className }) => {\n  const { selectedBlock, fullScreen } = useExplorer();\n\n  if (fullScreen) return null;\n\n  return (selectedBlock?.title || selectedBlock?.description) && (\n    <>\n      <div className={clsx(\"grid gap-1 min-w-0\", className)}>\n        <p className=\"text-sm font-semibold\">{selectedBlock?.title}</p>\n        <div className=\"line-clamp-3 text-xs\">\n          <p className=\"text-sm text-muted-foreground\">{selectedBlock?.description}</p>\n        </div>\n      </div>\n      <div className=\"border-t\" />\n    </>\n  );\n};",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/viewer/header.jsx"
     },
     {
       "path": "src/components/explorer/viewer/index.jsx",
       "content": "export { Viewer } from './viewer';\nexport { \n  ViewerLeft,\n  ViewerRight,\n  ViewerLeftNav,\n  ViewerRightMobileOnly,\n  ViewerRightDesktopOnly\n} from './header';\nexport { ViewerHeader } from './header';\nexport { ViewerContent } from './content';",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/viewer/index.jsx"
     },
     {
       "path": "src/components/explorer/viewer/viewer.jsx",
       "content": "export const Viewer = ({ children }) => (\n    <div className=\"flex h-full w-full flex-col\">{children}</div>\n  );",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/viewer/viewer.jsx"
     },
     {
       "path": "src/components/explorer/utils/responsive.jsx",
       "content": "export const getResponsiveWidthClass = (width) => {\n    if (width >= 2296) return \"w-[25%]\";\n    if (width >= 1706) return \"w-[30%]\";\n    if (width >= 1133) return \"w-[33%]\";\n    if (width >= 950) return \"w-[50%]\";\n    if (width >= 800) return \"w-[38%]\";\n    return \"w-full\";\n  };",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/utils/responsive.jsx"
     },
     {
       "path": "src/components/explorer/navigator/body.jsx",
       "content": "import React from \"react\";\nimport { ScrollArea } from \"@/components/ui/scroll-area\";\nimport clsx from \"clsx\";\nimport { useExplorer } from \"../context/explorer-context\";\n\nexport const NavigatorBody = ({ children }) => {\n  const { master } = useExplorer();\n\n  return (\n    <div className=\"flex flex-col flex-1 overflow-hidden\">\n      <ScrollArea className=\"flex-1\">\n        <div className=\"p-4 space-y-4\">\n          {master.map((item) =>\n            item.type === \"section\" ? (\n              <NavigatorSection key={item.id} data={item} mobileOnly={item?.mobileOnly ?? false} />\n            ) : (\n              <NavigatorBlockGroup key={item.id} data={item} mobileOnly={item?.mobileOnly ?? false} />\n            ))}\n        </div>\n      </ScrollArea>\n      {children}\n    </div>\n  );\n};\n\nconst NavigatorSection = ({ data, mobileOnly }) => {\n  const { isMobileView, fullScreen, setFullScreen } = useExplorer();\n\n  if (!data?.title && !data?.element) return null;\n  if (mobileOnly && !isMobileView) return null;\n\n  return (\n    <div className=\"space-y-2\">\n      {data.title && <h2 className=\"text-sm font-medium\">{data.title}</h2>}\n      {data.element && React.cloneElement(data.element, { meta: data, isMobileView, fullScreen, setFullScreen })}\n    </div>\n  );\n};\n\nconst NavigatorBlockGroup = ({ data, mobileOnly }) => {\n  const { config, isMobileView } = useExplorer();\n  const pathname = config?.getPathname();\n  \n  if (mobileOnly && !isMobileView) return null;\n\n  return (\n    <div className=\"space-y-3\">\n      {(data?.title || data?.description) && (\n        <div className=\"space-y-1\">\n          {data?.title && <p className=\"text-sm font-medium\">{data.title}</p>}\n          {data?.description && (\n            <p className=\"text-sm text-muted-foreground\">{data.description}</p>\n          )}\n        </div>\n      )}\n      <div className=\"grid grid-cols-2 gap-2\">\n        {data.blocks.map((block) => {\n          const isActive = pathname === block.slug;\n\n          return (\n            <button\n              key={block.id}\n              onClick={() => config?.navigate(block.slug)}\n              className={clsx(\n                \"flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent\",\n                isActive && \"bg-muted border border-gray-600\"\n              )}>\n              <div className=\"flex w-full flex-col gap-1\">\n                <div className=\"flex items-center w-full\">\n                  <div className=\"overflow-hidden rounded-md aspect-square\">\n                    {block.icon}\n                  </div>\n                  <div className=\"ml-auto text-xs text-muted-foreground\">{block.header ?? \"\"}</div>\n                </div>\n                <div className=\"text-sm mt-4\">\n                  <h3 className=\"font-medium leading-none whitespace-nowrap\">\n                    {block.title}\n                  </h3>\n                </div>\n              </div>\n            </button>\n          );\n        })}\n      </div>\n    </div>\n  );\n};",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/navigator/body.jsx"
     },
     {
       "path": "src/components/explorer/navigator/footer.jsx",
       "content": "export const NavigatorFooter = ({ children }) => children;",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/navigator/footer.jsx"
     },
     {
       "path": "src/components/explorer/navigator/header.jsx",
       "content": "import { useExplorer } from \"../context/explorer-context\";\n\nexport const NavigatorHeader = ({ children }) => children;\n\nexport const NavigatorLeft = ({ children }) => (\n  <div className=\"flex flex-1 items-center gap-2\">{children}</div>\n);\n\nexport const NavigatorRight = ({ children }) => (\n  <div className=\"flex items-center gap-2\">{children}</div>\n);\n\nexport const NavigatorMobileOnly = ({ children }) => {\n  const { isMobileView } = useExplorer();\n  return isMobileView ? children : null;\n};\n\nexport const NavigatorDesktopOnly = ({ children }) => {\n  const { isMobileView } = useExplorer();\n  return !isMobileView ? children : null;\n};",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/navigator/header.jsx"
     },
     {
       "path": "src/components/explorer/navigator/index.jsx",
       "content": "export { Navigator } from './navigator';\nexport { \n  NavigatorHeader,\n  NavigatorLeft,\n  NavigatorRight,\n  NavigatorMobileOnly,\n  NavigatorDesktopOnly\n} from './header';\nexport { NavigatorBody } from './body';\nexport { NavigatorFooter } from './footer';",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/navigator/index.jsx"
     },
     {
       "path": "src/components/explorer/navigator/navigator.jsx",
       "content": "export const Navigator = ({ children }) => (\n    <div className=\"flex flex-col h-full\">{children}</div>\n  );",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/navigator/navigator.jsx"
     },
     {
       "path": "src/components/explorer/context/explorer-context.jsx",
       "content": "import { createContext, useContext } from \"react\";\n\nconst ExplorerContext = createContext();\n\nexport const useExplorer = () => {\n  const context = useContext(ExplorerContext);\n  if (!context) {\n    throw new Error('useExplorer must be used within an ExplorerProvider');\n  }\n  return context;\n};\n\nexport { ExplorerContext };",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/context/explorer-context.jsx"
     },
     {
       "path": "src/components/explorer/components/toggle-fullscreen.jsx",
       "content": "import { Toggle } from \"@/components/ui/toggle\";\nimport { useExplorer } from \"../context/explorer-context\";\n\nexport const ToggleFullScreen = ({ children }) => {\n  const { fullScreen, setFullScreen, isMobileView } = useExplorer();\n\n  return (\n    <Toggle\n      disabled={isMobileView}\n      aria-label=\"Toggle fullscreen\"\n      onClick={() => setFullScreen(prev => !prev)}>\n      {children}\n    </Toggle>\n  );\n};",
-      "type": "registry:component"
+      "type": "registry:component",
+      "target": "src/components/explorer/components/toggle-fullscreen.jsx"
     },
     {
       "path": "src/hooks/use-window-size.jsx",
       "content": "import { useState, useEffect } from \"react\";\n\nexport function useWindowSize() {\n  const [size, setSize] = useState({\n    width: undefined,\n    height: undefined,\n  });\n\n  useEffect(() => {\n    function handleResize() {\n      setSize({\n        width: window.innerWidth,\n        height: window.innerHeight,\n      });\n    }\n    handleResize();\n\n    window.addEventListener(\"resize\", handleResize);\n    return () => window.removeEventListener(\"resize\", handleResize);\n  }, []);\n\n  return size;\n}\n",
-      "type": "registry:hook"
+      "type": "registry:hook",
+      "target": "src/hooks/use-window-size.jsx"
     }
   ]
 }
